@@ -1,0 +1,19 @@
+version: "3.8"
+services:
+  postgres:
+    build: ./database_files/
+    container_name: postgres_container
+    ports:
+      - "5432:5432"
+    volumes:
+      - data:/var/lib/postgresql/data
+    env_file:
+      - ./env/postgres.env
+  app:
+    build: "./"
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+volumes:
+  data:

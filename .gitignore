@@ -1,0 +1,4 @@
+/database_files/
+/venv/
+/keys/
+.dockerignore
