@@ -2,18 +2,24 @@ version: "3.8"
 services:
   app:
     build: "app"
+    container_name: app_container
     ports:
       - "5000:5000"
     depends_on:
-      - postgres
-  postgres:
-    build: app/database_files
+      - database
+  database:
+    build: "database"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     container_name: postgres_container
     ports:
       - "5432:5432"
     volumes:
       - data1:/var/lib/postgresql/data
     env_file:
-      - app/env/postgres.env
+      - database/env/postgres.env
 volumes:
   data1:
