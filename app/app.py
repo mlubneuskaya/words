@@ -1,5 +1,6 @@
 import datetime
 import psycopg2
+import os
 from flask import Flask, request
 from flask_swagger_ui import get_swaggerui_blueprint
 
@@ -12,8 +13,9 @@ app = Flask(__name__)
 
 app.register_blueprint(blueprint, url_prefix=SWAGGER_URL)
 
-conn = psycopg2.connect(database="data", host="postgres_container",
-                        user="postgres", password="password", port="5432")
+DATABASE_URL = os.environ.get('DATABASE_URL')
+conn = psycopg2.connect(DATABASE_URL)
+
 cursor = conn.cursor()
 
 
@@ -32,6 +34,11 @@ def get_words():
     cursor.execute("SELECT * FROM entered_data ORDER BY time DESC LIMIT 5")
     words = cursor.fetchall()
     return words
+
+
+@app.route('/', methods=['GET'])
+def hello_world():
+    return "Hello world"
 
 
 if __name__ == '__main__':
